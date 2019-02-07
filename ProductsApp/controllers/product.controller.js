@@ -49,4 +49,3 @@ exports.getAll = (req, res, next) => {
         res.send(products);
     })
 };
-
