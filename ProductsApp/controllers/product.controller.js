@@ -1,11 +1,19 @@
+const Category = require('../models/category.model');
 const Product = require('../models/product.model');
- 
 
-exports.product_create = function (req, res, next) {             //funcion para crear un objeto desde DB
+
+
+
+
+
+
+// controllers/products.js
+exports.product_create = function (req, res) {
     let product = new Product(
         {
             name: req.body.name,
             price: req.body.price,
+            category: req.body.category
         }
     );
 
@@ -18,34 +26,19 @@ exports.product_create = function (req, res, next) {             //funcion para 
 };
 
 
-exports.product_update = function (req, res,next) {
-    Product.findByIdAndUpdate(req.params.id, {$set: req.body}, function (err, product) {
+exports.getProductsByBrand = (req, res, next) => {
+    Product.where('brand').equals(req.params.id).populate('brand').exec((err, products) => {
         if (err) return next(err);
-        res.send('Product udpated.');
-    });
-};
-
-
-exports.product_details = function (req, res, next) {                  //funcion para obtener un valor desde DB
-    Product.findById(req.params.id, function (err, product) {
-        if (err) return next(err);
-        res.send(product);
+        console.log(err, products)
+        res.send(products);
     })
 };
 
-
-
-exports.product_delete = function (req, res,next) {                  //FUNCION PARA BORRAR UN ELEMENTO DESDE BASE DE DATOS
-    
-    Product.findByIdAndRemove(req.params.id, function (err) {
-        if (err) return next(err);
-        res.send('Deleted successfully!');
-    })
-};
 
 exports.getAll = (req, res, next) => {
-    Product.find((err, products) => {
+    Product.where('cat').equals(req.params.id).populate({path:'cat'}).exec((err, products) => {
         if (err) return next(err);
+        console.log(err, products)
         res.send(products);
     })
 };
